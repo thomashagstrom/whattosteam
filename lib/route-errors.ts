@@ -28,6 +28,8 @@ const KNOWN: Record<string, Mapped> = {
   "UNAVAILABLE": { code: "unavailable", status: 503, message: "The service is not reachable right now. Please try again in a moment." },
   "deadline-exceeded": { code: "unavailable", status: 503, message: "The service is not reachable right now. Please try again in a moment." },
   "14": { code: "unavailable", status: 503, message: "The service is not reachable right now. Please try again in a moment." },
+  "steam/missing-key": { code: "misconfigured", status: 500, message: "The app isn't fully set up yet: the STEAM_API_KEY setting is missing. Its owner can add it on the server." },
+  "steam/unavailable": { code: "unavailable", status: 503, message: "Couldn't reach Steam. Please try again in a moment." },
   "app/no-app": { code: "misconfigured", status: 500, message: "The app isn't fully set up yet. Its owner can check the server log, which names what is missing." },
   "app/invalid-credential": { code: "misconfigured", status: 500, message: "The app isn't fully set up yet. Its owner can check the server log, which names what is missing." },
   "auth/invalid-credential": { code: "misconfigured", status: 500, message: "The app isn't fully set up yet. Its owner can check the server log, which names what is missing." },
