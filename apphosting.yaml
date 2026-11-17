@@ -11,6 +11,27 @@ runConfig:
 env:
   # Read on each request on the server, so it is a runtime secret, not a build setting.
   - variable: STEAM_API_KEY
-    secret: STEAM_API_KEY
+    secret: loomshift-steam-api-key@1
     availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: AIzaSyDFOhjrMj61R6enROdHyAqRu6MXvGGWSRc
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: whattosteam-6h41w.firebaseapp.com
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: whattosteam-6h41w
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: 1:801447287177:web:f421411d77cb5eb7836958
+    availability:
+      - BUILD
       - RUNTIME
