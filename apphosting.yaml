@@ -7,3 +7,10 @@ runConfig:
   memoryMiB: 512
   minInstances: 0
   maxInstances: 2
+
+env:
+  # Read on each request on the server, so it is a runtime secret, not a build setting.
+  - variable: STEAM_API_KEY
+    secret: STEAM_API_KEY
+    availability:
+      - RUNTIME

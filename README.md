@@ -74,3 +74,11 @@ your app needs in your own Google account and gives them to the deployed app; ad
 under Deliveries, What your app needs. To run with one on your own machine, put it in
 `.env.local`, which is not committed. Code that reads a secret should stop with an error that
 names the variable when it is missing, never print the value.
+
+`STEAM_API_KEY` is the Steam Web API key used by `/api/steam/games` to list a profile's owned games.
+Create it at https://steamcommunity.com/dev/apikey. It is read on the server on each request, so
+setting it on the running service takes effect without a rebuild. It never reaches the browser. When
+it is unset the route answers with an error that names `STEAM_API_KEY`. `apphosting.yaml` maps it
+from a secret of the same name (runtime only), which must exist in the deployed backend's secrets.
+
+Run the tests with `npm test`.
