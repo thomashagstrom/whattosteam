@@ -47,12 +47,12 @@ export default function SteamLookup() {
           id="steam-profile"
           value={profile}
           onChange={(e) => setProfile(e.target.value)}
-          placeholder="7656119… or https://steamcommunity.com/profiles/7656119…"
+          placeholder="7656119…, https://steamcommunity.com/profiles/7656119…, or https://steamcommunity.com/id/name"
           className="rounded border border-gray-500 bg-white p-2 text-black"
           aria-describedby="steam-profile-help steam-profile-error"
         />
         <p id="steam-profile-help" className="text-sm">
-          A 17-digit SteamID64 or a steamcommunity.com/profiles/ link.
+          A 17-digit SteamID64, a steamcommunity.com/profiles/ link, or a steamcommunity.com/id/ link.
         </p>
         <button
           type="submit"

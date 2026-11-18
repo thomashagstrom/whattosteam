@@ -13,6 +13,15 @@ function stubSteam(response: unknown) {
   return fetchMock;
 }
 
+function stubSteamSequence(responses: unknown[]) {
+  const fetchMock = vi.fn();
+  for (const response of responses) {
+    fetchMock.mockImplementationOnce(async () => Response.json({ response }));
+  }
+  vi.stubGlobal('fetch', fetchMock);
+  return fetchMock;
+}
+
 beforeEach(() => {
   vi.stubEnv('STEAM_API_KEY', 'fake-test-key');
   vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -60,6 +69,34 @@ describe('steam games route', () => {
     stubSteam({});
     const body = await (await call(ID)).json();
     expect(body).toMatchObject({ private: true, games: [] });
+  });
+
+  it('resolves a custom profile link to the SteamID and shows that profile\'s games', async () => {
+    const fetchMock = stubSteamSequence([
+      { success: 1, steamid: ID },
+      { game_count: 0 },
+      { game_count: 0 },
+    ]);
+    const vanity = await (await call('https://steamcommunity.com/id/somename')).json();
+    const bare = await (await call(ID)).json();
+    expect(vanity).toEqual(bare);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+  });
+
+  it('reports no profile found when Steam has no match for a custom name', async () => {
+    const fetchMock = stubSteamSequence([{ success: 42 }]);
+    const response = await call('https://steamcommunity.com/id/nosuchname');
+    const body = await response.json();
+    expect(response.status).toBe(404);
+    expect(body.message).toMatch(/couldn't find a profile/i);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects a non-Steam link without calling Steam', async () => {
+    const fetchMock = stubSteam({});
+    const response = await call('https://example.com/id/somename');
+    expect(response.status).toBe(400);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it('answers with an error naming STEAM_API_KEY when it is not set', async () => {
