@@ -1,13 +1,24 @@
 import { routeError } from '@/lib/route-errors';
-import { fetchOwnedGames, parseSteamId } from '@/lib/steam';
+import { fetchOwnedGames, parseProfileInput, resolveVanityUrl } from '@/lib/steam';
 
 export async function GET(request: Request): Promise<Response> {
   try {
-    const steamId = parseSteamId(new URL(request.url).searchParams.get('profile') ?? '');
+    const parsed = parseProfileInput(new URL(request.url).searchParams.get('profile') ?? '');
+    if (!parsed) {
+      return Response.json(
+        {
+          error: 'invalid-profile',
+          message:
+            'Enter a 17-digit SteamID, a steamcommunity.com/profiles/ link, or a steamcommunity.com/id/ link.',
+        },
+        { status: 400 },
+      );
+    }
+    const steamId = parsed.kind === 'id' ? parsed.steamId : await resolveVanityUrl(parsed.name);
     if (!steamId) {
       return Response.json(
-        { error: 'invalid-profile', message: 'Enter a 17-digit SteamID or a steamcommunity.com/profiles/ link.' },
-        { status: 400 },
+        { error: 'not-found', message: "We couldn't find a profile for that name." },
+        { status: 404 },
       );
     }
     const games = await fetchOwnedGames(steamId);
