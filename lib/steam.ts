@@ -141,3 +141,32 @@ export async function fetchFriendsInGame(steamId: string): Promise<FriendInGame[
   }
   return playing;
 }
+
+export interface ProfileVisibility {
+  /** Set when both games and friends are hidden: the page should lead with one profile-wide notice. */
+  profilePrivate: boolean;
+  /** Message for the games section. Always set: games are either shown, private, or genuinely empty. */
+  gamesMessage: string | null;
+  /** Message for the friends section, set only when the friend list could not be seen. */
+  friendsMessage: string | null;
+}
+
+/**
+ * What to tell a visitor about the parts of a profile that Steam hid, so the page never shows a
+ * bare empty list where the real reason is a privacy setting.
+ */
+export function summarizeVisibility(
+  games: { private: boolean; count: number },
+  friends: { private: boolean },
+): ProfileVisibility {
+  const profilePrivate = games.private && friends.private;
+  return {
+    profilePrivate,
+    gamesMessage: games.private
+      ? "This profile's games are private or there are none."
+      : games.count === 0
+        ? 'This profile has no games. Check the ID.'
+        : null,
+    friendsMessage: friends.private ? "This profile's friends could not be seen." : null,
+  };
+}

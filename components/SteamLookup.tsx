@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { describeRouteError } from '@/lib/route-errors';
-import type { FriendInGame, OwnedGame } from '@/lib/steam';
+import { summarizeVisibility, type FriendInGame, type OwnedGame } from '@/lib/steam';
 
 interface Result {
   steamId: string;
@@ -77,11 +77,22 @@ export default function SteamLookup() {
       <p id="steam-profile-error" role="alert" className="text-red-700">
         {error}
       </p>
-      {result?.private && <p>This profile&apos;s game details are private.</p>}
-      {result && !result.private && result.games.length === 0 && (
-        <p>This profile has no games. Check the ID.</p>
-      )}
-      {friendsPrivate && <p>This profile&apos;s friend list is private.</p>}
+      {result &&
+        (() => {
+          const visibility = summarizeVisibility(
+            { private: result.private, count: result.games.length },
+            { private: friendsPrivate },
+          );
+          return (
+            <>
+              {visibility.profilePrivate && (
+                <p role="status">Most of this profile is private.</p>
+              )}
+              {visibility.gamesMessage && <p role="status">{visibility.gamesMessage}</p>}
+              {visibility.friendsMessage && <p role="status">{visibility.friendsMessage}</p>}
+            </>
+          );
+        })()}
       {friends && !friendsPrivate && (
         <div>
           <h2 className="font-semibold">Friends playing now</h2>
