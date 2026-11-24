@@ -10,11 +10,6 @@ runConfig:
 
 env:
   # Read on each request on the server, so it is a runtime secret, not a build setting.
-  - variable: STEAM_API_KEY
-    secret: loomshift-steam-api-key@6
-    availability:
-      - BUILD
-      - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
     value: AIzaSyDFOhjrMj61R6enROdHyAqRu6MXvGGWSRc
     availability:
